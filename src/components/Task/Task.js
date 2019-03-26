@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import avatar1 from '../../images/avatar1.png';
-import avatar3 from '../../images/avatar3.png';
-import avatar4 from '../../images/avatar4.png';
-import discussion1 from '../../images/discussion1.png';
-import discussion2 from '../../images/discussion2.jpg';
+import {Comment} from '../Comment/Comment';
 
 export class Task extends Component  {
 
@@ -22,47 +19,7 @@ export class Task extends Component  {
                         <span
                             className="badge badge-secondary badge-pill">{task.assignee.nickname}</span></label>
                 </div>
-                <div className="d-flex mb-3">
-                    <div className="flex-shrink-0">
-                        <img src={avatar3} className="mr-3 rounded-circle"
-                             style={{width: '3rem'}} alt="..."/>
-                    </div>
-                    <div className="bg-light p-2 p-sm-3 rounded flex-fill comment">
-                        <h5 className="mt-0">Dáša</h5>
-                        <p>Už mám první vlaštovku merche:</p>
-                        <p>
-                            <img src={discussion1} className="img-fluid shadow-sm" alt=""/>
-                        </p>
-                        <p>Co ty na to brácha? <strong>@Ludan</strong></p>
-                    </div>
-                </div>
-                <div className="d-flex mb-3">
-                    <div className="flex-shrink-0">
-                        <img src={avatar1} className="mr-3 rounded-circle"
-                             style={{width: '3rem'}} alt="..."/>
-                    </div>
-                    <div className="bg-light p-2 p-sm-3 rounded flex-fill comment">
-                        <h5 className="mt-0">Luďan</h5>
-                        <p>Jo, to není blbý brácha ... good job!</p>
-                    </div>
-                </div>
-                <div className="d-flex mb-3">
-                    <div className="flex-shrink-0">
-                        <img src={avatar4} className="mr-3 rounded-circle"
-                             style={{width: '3rem'}} alt="..."/>
-                    </div>
-                    <div className="bg-light p-2 p-sm-3 rounded flex-fill comment">
-                        <h5 className="mt-0">Čočkin</h5>
-                        <p>Hele a myslíte, že to bude fungovat?</p>
-                        <p>Třeba já bych si na sebe takovou blbost nepřipnul. Neuděláme něco víc fancy?
-                            Třeba šátek?</p>
-                        <p>Nebo mě ještě napadlo, že bychom mohli vyrábět brejle. Mrkejte:</p>
-                        <p>
-                            <img src={discussion2} width="400" className="img-fluid shadow-sm"
-                                 alt=""/>
-                        </p>
-                    </div>
-                </div>
+                {comments.map(Comment)}
                 <div className="d-flex mb-3">
                     <div className="flex-shrink-0">
                         <img src={avatar1} className="mr-3 rounded-circle"
