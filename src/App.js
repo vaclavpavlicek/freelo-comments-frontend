@@ -5,6 +5,7 @@ import avatar1 from './images/avatar1.png';
 import avatar2 from './images/avatar2.png';
 import avatar3 from './images/avatar3.png';
 import './App.scss';
+import {assocPath, append, pipe, takeLast, nth, inc, prop} from 'ramda';
 
 class App extends Component {
     constructor(props) {
@@ -49,18 +50,27 @@ class App extends Component {
     }
 
     addComment(text) {
-        this.state.comments.push({
-            nickname: 'Dáša',
-            avatar: avatar3,
-            text
+        this.setState({
+            comments: append({
+                id: this.getId(),
+                nickname: 'Dáša',
+                avatar: avatar3,
+                text,
+            }, this.state.comments)
         });
-        this.setState({comments: this.state.comments});
+    }
+
+    getId() {
+        return pipe(
+            takeLast(1),
+            nth(0),
+            prop('id'),
+            inc
+        )(this.state.comments);
     }
 
     updateTaskResolved(e) {
-        const task = this.state.task;
-        task.resolved = e.target.checked;
-        this.setState({task});
+        this.setState(assocPath(['task', 'resolved'], e.target.checked, this.state));
     }
 
     render() {
@@ -72,7 +82,7 @@ class App extends Component {
                         <Task task={this.state.task}
                               comments={this.state.comments}
                               addComment={this.addComment.bind(this)}
-                              updateTaskResolved={this.updateTaskResolved.bind(this)} />
+                              updateTaskResolved={this.updateTaskResolved.bind(this)}/>
                     </div>
                 </div>
             </div>
