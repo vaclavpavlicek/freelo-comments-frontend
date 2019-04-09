@@ -2,13 +2,16 @@ import React, {Component} from 'react';
 import {Toolbar} from './components/Toolbar/Toolbar';
 import {Task} from './components/Task/Task';
 import './App.scss';
-import {assocPath, append, pipe, takeLast, nth, inc, prop} from 'ramda';
+import {assocPath, append, pipe, takeLast, nth, inc, prop, assoc} from 'ramda';
+import {PROGRESS_STATES} from "./constants";
 import * as axios from "axios";
 
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            status: PROGRESS_STATES.LOADING
+        };
         this.fetch();
     }
 
@@ -17,18 +20,25 @@ class App extends Component {
             comments: append({
                 id: this.getId(),
                 nickname: 'Dáša',
-                avatar: './images/avatar3.png',
                 text,
             }, this.state.comments)
         });
     }
 
     fetch() {
-        axios.get('http://localhost:8000/rest/task-detail/1')
-            .then(response => {
-                this.setState(assocPath(['task', 'dueDate'], new Date(response.data.task.dueDate), response.data));
-            })
-            .catch(console.error);
+        axios.get('http://localhost:8000/rest/task-detail/2')
+            .then(({data}) => {
+                if (data.message === 'task-not-found') {
+                    this.setState({status: PROGRESS_STATES.TASK_NOT_FOUND});
+                } else {
+                    this.setState({
+                            task: assoc('dueDate', new Date(data.task.dueDate), data.task),
+                            comments: data.comments,
+                            status: PROGRESS_STATES.LOADED
+                        }
+                    );
+                }
+            }).catch(console.error);
     }
 
     getId() {
@@ -45,33 +55,27 @@ class App extends Component {
     }
 
     render() {
-        console.log(this.state);
-        if (this.state.task) {
-            return (
-                <div className="container container--w1440">
-                    <div className="d-lg-flex my-4 my-md-5">
-                        <div className="flex-fill w-75">
-                            <Toolbar/>
-                            <Task task={this.state.task}
-                                  comments={this.state.comments}
-                                  addComment={this.addComment.bind(this)}
-                                  updateTaskResolved={this.updateTaskResolved.bind(this)}/>
-                        </div>
+        const loading = this.state.status === PROGRESS_STATES.LOADING;
+        const notFound = this.state.status === PROGRESS_STATES.TASK_NOT_FOUND;
+        const loaded = this.state.status === PROGRESS_STATES.LOADED;
+
+        return (
+            <div className="container container--w1440">
+                <div className="d-lg-flex my-4 my-md-5">
+                    <div className="flex-fill w-75">
+                        <Toolbar/>
+                        {loading && <h1 className="status-title">Loading</h1>}
+                        {notFound && <h1 className="status-title error">Task not found. :(</h1>}
+                        {loaded &&
+                        <Task task={this.state.task}
+                              comments={this.state.comments}
+                              addComment={this.addComment.bind(this)}
+                              updateTaskResolved={this.updateTaskResolved.bind(this)}/>
+                        }
                     </div>
                 </div>
-            );
-        } else {
-            return (
-                <div className="container container--w1440">
-                    <div className="d-lg-flex my-4 my-md-5">
-                        <div className="flex-fill w-75">
-                            <Toolbar/>
-                            <h1>Loading</h1>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
+            </div>
+        );
     }
 }
 

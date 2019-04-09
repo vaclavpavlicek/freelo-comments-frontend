@@ -31,18 +31,15 @@ export class Task extends Component {
                     <input type="checkbox" className="form-check-input" id="exampleCheck1" checked={task.resolved}
                            onChange={updateTaskResolved}/>
                     <label className="form-check-label" htmlFor="exampleCheck1">
-                        {task.name}
+                        {task.title}
                         <span
-                            className="badge badge-primary badge-pill">{formatDate(task.dueDate)}</span> <img
-                        src={task.assignee.profilePicture} className="rounded-circle" style={{width: "1.3rem"}}
-                        alt="..."/>
+                            className="badge badge-primary badge-pill">{formatDate(task.dueDate)}</span>
                         <span
-                            className="badge badge-secondary badge-pill">{task.assignee.nickname}</span></label>
+                            className="badge badge-secondary badge-pill">{task.assignee.name}</span></label>
                 </div>
                 {comments.map(
-                    ({id, avatar, name, text}) => (
-                        <Comment avatar={avatar}
-                                 name={name}
+                    ({author, text, id}) => (
+                        <Comment author={author}
                                  text={text}
                                  key={id}/>
                     )
@@ -51,9 +48,9 @@ export class Task extends Component {
                     <form action="">
                         <div className="form-group flex-fill">
                             <div className="d-sm-flex">
-                        <textarea value={this.state.commentText} className="form-control"
-                                  id="exampleFormControlTextarea1" rows="3"
-                                  placeholder="Napiš komentář…" onChange={this.commentChanged.bind(this)}></textarea>
+                                <textarea value={this.state.commentText} className="form-control"
+                                          id="exampleFormControlTextarea1" rows="3"
+                                          placeholder="Napiš komentář…" onChange={this.commentChanged.bind(this)}/>
                             </div>
                         </div>
                     </form>
